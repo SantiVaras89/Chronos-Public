@@ -1,0 +1,7 @@
+client/node_modules
+client/build
+database/schemas
+server/node_modules
+server/build
+server/.vscode
+server/.sfdx

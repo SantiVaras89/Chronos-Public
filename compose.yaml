@@ -1,0 +1,80 @@
+version: '3.3'
+services:
+  chronos-database:
+    image: chronos-database-local:1.0
+    build: 
+      context: ./database
+      dockerfile: Dockerfile
+    hostname: chronos-database
+    container_name: chronos-database-local
+    restart: always
+    ports:
+    - 23306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: "Kisame89"
+      MYSQL_DATABASE: "db_chronos"
+      MYSQL_USER: "userdb"
+      MYSQL_PASSWORD: "userpwd"
+    volumes:
+      - ./database/schemas:/var/lib/mysql:rw
+    networks:
+      chronos_network:
+        aliases:
+          - chronos_network
+    
+  chronos-backend:
+    image: chronos-backend-local:3.0
+    build: 
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: chronos-backend-local
+    restart: unless-stopped
+    ports:
+      - 9000:9001
+    environment:
+      DB_HOST: "chronos-database"
+      DB_PORT: "3306"
+      DB_USER: "userdb"
+      DB_PASS: "userpwd"
+      DB_NAME: "db_chronos"
+      API_KEY: 'AIzaSyD42qwdc_nOzpgNzvuXTpm6ny-nNaIGYU0'
+      MAIL_USER: "no-reply@fysgroup.com.ar"
+      MAIL_PASSWORD: "12345678"
+      MAIL_PORT: "465"
+      MAIL_HOST: "smtp.gmail.com"
+    depends_on:
+      - chronos-database
+    links:
+      - chronos-database
+    networks:
+      chronos_network:
+        aliases:
+          - chronos_network
+
+  chronos-frontend:
+    image: chronos-frontend-local:3.0
+    build: 
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: chronos-frontend-local
+    restart: unless-stopped
+    ports:
+      - 80:80
+    depends_on:
+
+      - chronos-database
+      - chronos-backend
+    links:
+      - chronos-database
+      - chronos-backend
+    networks:
+      chronos_network:
+        aliases:
+          - chronos_network
+
+volumes:
+  schemas: {}
+networks:
+  chronos_network:
+    name: mysql_net
+    driver: bridge

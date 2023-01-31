@@ -1,0 +1,8 @@
+ [2023-01-10T20:01:23.654Z] 
+ Level: info 
+ Message: groups.controllers.ts (data-access) getGroupById - Request : {"id":"3"} 
+
+ [2023-01-11T13:55:24.848Z] 
+ Level: error 
+ Message: groups.controllers.ts (data-access) updateGroup - Error: El grupo no existe - Request : {"name_permission":"permiso2","description_permission":"permiso para extraer información de base de datos"} 
+
